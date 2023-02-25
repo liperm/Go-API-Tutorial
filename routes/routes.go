@@ -13,6 +13,7 @@ func HandleRequests() {
 	router.HandleFunc("/", controllers.Hello).Methods("GET")
 	router.HandleFunc("/customers", controllers.GetCustomers).Methods("GET")
 	router.HandleFunc("/customers/{id}", controllers.GetCustomerById).Methods("GET")
+	router.HandleFunc("/customers", controllers.CreateCustomer).Methods("POST")
 	log.Println("Ready to listen on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
