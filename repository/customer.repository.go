@@ -12,10 +12,10 @@ func GetCustomers() []models.Customer {
 	return customers
 }
 
-func GetCustomerById(id string) models.Customer {
+func GetCustomerById(id int) models.Customer {
 	var customer models.Customer
 
-	database.DB.First(&customer, id)
+	database.DB.Where("active = ?", true).First(&customer, id)
 	return customer
 }
 
@@ -31,4 +31,26 @@ func CreateCustomer(customer models.Customer) (int, string) {
 	id := customer.ID
 	message := constants.OK
 	return id, message
+}
+
+func UpdateCustomer(customer *models.Customer) (int, string) {
+	result := database.DB.Save(&customer)
+	if result.Error != nil {
+		id := 0
+		message := result.Error.Error()
+		return id, message
+	}
+	return customer.ID, constants.OK
+}
+
+func DeleteCustomer(customer *models.Customer) (int, string) {
+	customer.Active = false
+	result := database.DB.Save(&customer)
+
+	if result.Error != nil {
+		id := 0
+		message := result.Error.Error()
+		return id, message
+	}
+	return customer.ID, constants.OK
 }

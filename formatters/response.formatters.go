@@ -1,11 +1,17 @@
 package formatters
 
+import "fmt"
+
 type errorResponse struct {
 	ErrorMessage string `json:"error"`
 }
 
-type creationSuccessResponse struct {
+type successResponse struct {
 	ID int `json:"id"`
+}
+
+type notFoundResponse struct {
+	Message string `json:"message"`
 }
 
 func FormatErrorResponse(err string) errorResponse {
@@ -14,8 +20,14 @@ func FormatErrorResponse(err string) errorResponse {
 	}
 }
 
-func FormatCreationSuccessResponse(id int) creationSuccessResponse {
-	return creationSuccessResponse{
+func FormatSuccessResponse(id int) successResponse {
+	return successResponse{
 		ID: id,
+	}
+}
+
+func FormatNotFoundResponse(id int) notFoundResponse {
+	return notFoundResponse{
+		Message: fmt.Sprint("id: ", id, " not found"),
 	}
 }
