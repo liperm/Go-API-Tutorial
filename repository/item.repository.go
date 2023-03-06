@@ -8,7 +8,7 @@ import (
 
 func GetItems() []models.Item {
 	var customers []models.Item
-	database.DB.Find(&customers)
+	database.DB.Where("active = ?", true).Find(&customers)
 	return customers
 }
 
@@ -16,6 +16,12 @@ func GetItemById(id int) models.Item {
 	var item models.Item
 
 	database.DB.Where("active = ?", true).First(&item, id)
+	return item
+}
+
+func GetItemByCode(code string) models.Item {
+	var item models.Item
+	database.DB.Where("active = ?", true).First(&item, "code =? ", code)
 	return item
 }
 

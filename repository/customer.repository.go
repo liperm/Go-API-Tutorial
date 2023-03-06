@@ -8,14 +8,14 @@ import (
 
 func GetCustomers() []models.Customer {
 	var customers []models.Customer
-	database.DB.Find(&customers)
+	database.DB.Model(&customers).Preload("Items", "active = ?", true).Find(&customers)
 	return customers
 }
 
 func GetCustomerById(id int) models.Customer {
 	var customer models.Customer
 
-	database.DB.Where("active = ?", true).First(&customer, id)
+	database.DB.Model(&customer).Preload("Items", "active = ?", true).First(&customer, id).Where("active = ?", true)
 	return customer
 }
 

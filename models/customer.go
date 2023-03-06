@@ -5,6 +5,7 @@ type Customer struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Items    []Item `json:"items" gorm:"many2many:customer_item"`
 }
 
 func (customer *Customer) TableName() string {

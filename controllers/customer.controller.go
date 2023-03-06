@@ -79,8 +79,8 @@ func UpdateCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	successResponse := formatters.FormatSuccessResponse(id)
-	json.NewEncoder(w).Encode(successResponse)
 	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(successResponse)
 }
 
 func DeleteCustomer(w http.ResponseWriter, r *http.Request) {
@@ -105,7 +105,29 @@ func DeleteCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	successResponse := formatters.FormatSuccessResponse(id)
-	json.NewEncoder(w).Encode(successResponse)
-
 	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(successResponse)
+}
+
+func GetCustomerBuyingList(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+	customer := repository.GetCustomerById(id)
+
+	if customer.ID == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		notFoundResponse := formatters.FormatNotFoundResponse(id)
+		json.NewEncoder(w).Encode(notFoundResponse)
+		return
+	}
+
+	itemsList := customer.Items
+	var totalValue float32
+	for _, item := range itemsList {
+		totalValue += item.Value
+	}
+
+	response := formatters.FormatBuyingListResponse(customer, totalValue)
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
 }

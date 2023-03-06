@@ -31,6 +31,20 @@ func GetItemById(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(item)
 }
 
+func GetItemByCode(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	code := vars["code"]
+	item := repository.GetItemByCode(code)
+
+	if item.ID == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		notFoundResponse := formatters.FormatNotFoundResponse(code)
+		json.NewEncoder(w).Encode(notFoundResponse)
+		return
+	}
+	json.NewEncoder(w).Encode(item)
+}
+
 func CreateItem(w http.ResponseWriter, r *http.Request) {
 	var item models.Item
 	json.NewDecoder(r.Body).Decode(&item)
@@ -72,8 +86,8 @@ func UpdateItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	successResponse := formatters.FormatSuccessResponse(id)
-	json.NewEncoder(w).Encode(successResponse)
 	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(successResponse)
 }
 
 func DeleteItem(w http.ResponseWriter, r *http.Request) {
@@ -98,7 +112,6 @@ func DeleteItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	successResponse := formatters.FormatSuccessResponse(id)
-	json.NewEncoder(w).Encode(successResponse)
-
 	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(successResponse)
 }
