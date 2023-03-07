@@ -20,9 +20,16 @@ type notFoundResponse struct {
 }
 
 type buyingListResponse struct {
-	CustomerID int           `json:"customer_id"`
-	Items      []models.Item `json:"items"`
-	TotalValue float32       `json:"total_value"`
+	CustomerID int               `json:"customer_id"`
+	Items      []buyingListItems `json:"items"`
+	TotalValue float32           `json:"total_value"`
+}
+
+type buyingListItems struct {
+	ID    int     `json:"id"`
+	Name  string  `json:"name"`
+	Code  string  `json:"code"`
+	Value float32 `json:"value"`
 }
 
 func FormatErrorResponse(err string) errorResponse {
@@ -50,9 +57,20 @@ func FormatNotFoundResponse[T string | int](value T) notFoundResponse {
 }
 
 func FormatBuyingListResponse(customer models.Customer, totalValue float32) buyingListResponse {
+	items := customer.Items
+	var itemsList []buyingListItems
+	for _, item := range items {
+		itemsList = append(itemsList, buyingListItems{
+			ID:    item.ID,
+			Name:  item.Name,
+			Code:  item.Code,
+			Value: item.Value,
+		})
+	}
+
 	return buyingListResponse{
 		CustomerID: customer.ID,
-		Items:      customer.Items,
+		Items:      itemsList,
 		TotalValue: totalValue,
 	}
 }
